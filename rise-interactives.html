@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rise 360 Custom Interactives</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --brand: #2563eb;
+    --brand-ink: #0b3ea6;
+    --success: #059669;
+    --error: #dc2626;
+    --card: #f8fafc;
+    --radius: 14px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji"; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 24px; }
+
+  .section { margin: 32px 0; }
+  .section h2 { margin: 0 0 12px; font-size: 1.35rem; }
+  .section p.lead { margin: 0 0 16px; color: var(--muted); }
+
+  /* ===== Flip Cards ===== */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 920px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+  .card {
+    perspective: 1000px;
+  }
+  .card button {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    width: 100%;
+    position: relative;
+    padding: 0;
+    text-align: left;
+    outline-offset: 4px;
+    cursor: pointer;
+  }
+  .face {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: var(--card);
+    border: 1px solid #e5e7eb;
+    padding: 18px;
+    height: 180px;
+    display: grid;
+    align-content: center;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    transition: transform 420ms cubic-bezier(.2,.8,.2,1);
+  }
+  .card[aria-pressed="true"] .face {
+    transform: rotateY(180deg);
+  }
+  .front, .back {
+    grid-row: 1;
+    grid-column: 1;
+    backface-visibility: hidden;
+  }
+  .front { font-weight: 600; }
+  .back  { transform: rotateY(180deg); color: var(--muted); }
+
+  /* ===== Quick Check (MCQ) ===== */
+  .quiz {
+    background: var(--card);
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+  .quiz h3 { margin-top: 0; font-size: 1.1rem; }
+  .options { display: grid; gap: 10px; margin: 12px 0 16px; }
+  .opt {
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 10px;
+    padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff;
+  }
+  .opt input { transform: translateY(2px); }
+  .quiz .actions { display: flex; gap: 10px; }
+  .btn {
+    appearance: none;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    background: var(--brand);
+    color: #fff;
+    cursor: pointer;
+  }
+  .btn:focus { outline: 2px solid var(--brand-ink); outline-offset: 2px; }
+  .btn.secondary { background: #e5e7eb; color: #111827; }
+
+  .feedback { margin-top: 12px; min-height: 1.25rem; font-weight: 600; }
+  .feedback.ok { color: var(--success); }
+  .feedback.no { color: var(--error); }
+
+  /* Small helper heading dividers */
+  .divider { height: 1px; background: #e5e7eb; margin: 24px 0; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- FLIP CARDS -->
+    <section class="section" aria-labelledby="cards-title">
+      <h2 id="cards-title">Flip Cards: Key Terms</h2>
+      <p class="lead">Click or press Enter/Space to flip. Great for quick concept checks.</p>
+
+      <div class="cards" role="list">
+        <div class="card" role="listitem">
+          <button type="button" class="flip" aria-pressed="false" aria-label="Flip card: Artificial Intelligence">
+            <div class="face">
+              <div class="front">Artificial Intelligence</div>
+              <div class="back">A field of computer science focused on building systems that can perform tasks that typically require human intelligence.</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="card" role="listitem">
+          <button type="button" class="flip" aria-pressed="false" aria-label="Flip card: Machine Learning">
+            <div class="face">
+              <div class="front">Machine Learning</div>
+              <div class="back">Algorithms that learn patterns from data to make predictions or decisions without being explicitly programmed.</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="card" role="listitem">
+          <button type="button" class="flip" aria-pressed="false" aria-label="Flip card: Large Language Model">
+            <div class="face">
+              <div class="front">Large Language Model</div>
+              <div class="back">A model trained on large text datasets to generate and understand human-like language.</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" role="presentation"></div>
+
+    <!-- QUICK CHECK (MCQ) -->
+    <section class="section" aria-labelledby="quiz-title">
+      <h2 id="quiz-title">Quick Check</h2>
+      <p class="lead">Instant feedback with score. Add multiple questions as needed.</p>
+
+      <div class="quiz" data-quiz>
+        <h3>1) What does “data privacy” primarily protect?</h3>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q1" value="A"> Personal information and how it’s shared</label>
+          <label class="opt"><input type="radio" name="q1" value="B"> Internet speed</label>
+          <label class="opt"><input type="radio" name="q1" value="C"> Screen brightness</label>
+          <label class="opt"><input type="radio" name="q1" value="D"> Battery life</label>
+        </div>
+        <div class="actions">
+          <button class="btn" data-check>Check</button>
+          <button class="btn secondary" data-reset>Reset</button>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="quiz" data-quiz>
+        <h3>2) Which chart is best for showing change over time?</h3>
+        <div class="options">
+          <label class="opt"><input type="radio" name="q2" value="A"> Pie chart</label>
+          <label class="opt"><input type="radio" name="q2" value="B"> Scatter plot</label>
+          <label class="opt"><input type="radio" name="q2" value="C"> Line chart</label>
+          <label class="opt"><input type="radio" name="q2" value="D"> Tree map</label>
+        </div>
+        <div class="actions">
+          <button class="btn" data-check>Check</button>
+          <button class="btn secondary" data-reset>Reset</button>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <p class="lead" id="score" style="margin-top:16px"></p>
+    </section>
+  </div>
+
+<script>
+  // ===== Flip Cards =====
+  document.querySelectorAll('.flip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pressed = btn.getAttribute('aria-pressed') === 'true';
+      btn.setAttribute('aria-pressed', String(!pressed));
+    });
+    // Ensure Space/Enter work consistently (button already supports, but this guards custom focus handling)
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+    });
+  });
+
+  // ===== Quick Check (MCQ) =====
+  const answerKey = { q1: 'A', q2: 'C' }; // Edit answers here
+  const scoreEl = document.getElementById('score');
+
+  function computeScore() {
+    let correct = 0, total = 0;
+    Object.keys(answerKey).forEach(q => {
+      total++;
+      const picked = document.querySelector(`input[name="${q}"]:checked`);
+      if (picked && picked.value === answerKey[q]) correct++;
+    });
+    scoreEl.textContent = `Score: ${correct} / ${total}`;
+  }
+
+  document.querySelectorAll('[data-quiz]').forEach((quiz, idx) => {
+    const radios = quiz.querySelectorAll('input[type="radio"]');
+    const fb = quiz.querySelector('.feedback');
+    const name = radios[0]?.name;
+    const checkBtn = quiz.querySelector('[data-check]');
+    const resetBtn = quiz.querySelector('[data-reset]');
+
+    checkBtn.addEventListener('click', () => {
+      const picked = quiz.querySelector('input[type="radio"]:checked');
+      if (!picked) { fb.textContent = 'Please choose an option.'; fb.className = 'feedback'; return; }
+      if (picked.value === answerKey[name]) {
+        fb.textContent = 'Correct! Nice job.';
+        fb.className = 'feedback ok';
+      } else {
+        fb.textContent = 'Not quite. Try again or reset.';
+        fb.className = 'feedback no';
+      }
+      computeScore();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      radios.forEach(r => r.checked = false);
+      fb.textContent = '';
+      fb.className = 'feedback';
+      computeScore();
+    });
+  });
+
+  computeScore();
+</script>
+</body>
+</html>
